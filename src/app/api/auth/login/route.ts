@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+export const runtime = 'nodejs'
 import { prisma } from '@/lib/prisma'
 import { createJWT, setJWTCookie } from '@/lib/jwt'
 import { loginSchema } from '@/lib/validations'
@@ -85,7 +86,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // ログイン成功時の処理
+    // MFAが有効な場合の処理
+    if (user.mfaEnabled) {
+      // パスワード認証成功後、MFA認証が必要
+      return NextResponse.json({
+        message: 'MFA認証が必要です',
+        requiresMFA: true,
+        userId: user.id
+      }, { status: 200 })
+    }
+
+    // ログイン成功時の処理（MFAが無効な場合）
     await prisma.user.update({
       where: { id: user.id },
       data: {

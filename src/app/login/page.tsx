@@ -6,10 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema, LoginFormData } from '@/lib/validations'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import MFAVerification from '@/components/MFAVerification'
 
 export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [requiresMFA, setRequiresMFA] = useState(false)
+  const [userId, setUserId] = useState('')
   const router = useRouter()
 
   const {
@@ -36,7 +39,14 @@ export default function LoginPage() {
         }),
       })
 
-      const result = await response.json()
+      let result: any = null
+      const contentType = response.headers.get('content-type') || ''
+      if (contentType.includes('application/json')) {
+        result = await response.json()
+      } else {
+        const text = await response.text()
+        result = { error: text }
+      }
 
       if (response.status === 423) {
         setError(result.error || 'アカウントを一時ロックしました。ホームに戻ります...')
@@ -47,9 +57,15 @@ export default function LoginPage() {
       }
 
       if (response.ok) {
-        // ログイン成功時はダッシュボードにリダイレクト
-        router.push('/dashboard/profile')
-        router.refresh()
+        if (result.requiresMFA) {
+          // MFA認証が必要
+          setRequiresMFA(true)
+          setUserId(result.userId)
+        } else {
+          // 通常のログイン成功
+          router.push('/dashboard/profile')
+          router.refresh()
+        }
       } else {
         setError(result.error || 'ログインに失敗しました')
       }
@@ -59,6 +75,19 @@ export default function LoginPage() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleMFASuccess = (user: any) => {
+    router.push('/dashboard/profile')
+    router.refresh()
+  }
+
+  if (requiresMFA) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <MFAVerification userId={userId} onSuccess={handleMFASuccess} />
+      </div>
+    )
   }
 
   return (

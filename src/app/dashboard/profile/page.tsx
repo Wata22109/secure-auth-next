@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { changePasswordSchema, ChangePasswordFormData } from '@/lib/validations'
 import PasswordStrengthMeter from '@/components/PasswordStrengthMeter'
 import Header from '@/components/Header'
+import MFAManagement from '@/components/MFAManagement'
 import useSWR from 'swr'
 
 interface LoginHistory {
@@ -109,7 +110,7 @@ export default function ProfilePage() {
         <div className="px-4 py-6 sm:px-0">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">プロファイル</h1>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* パスワード変更セクション */}
             <div className="bg-white shadow rounded-lg p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">パスワード変更</h2>
@@ -183,8 +184,13 @@ export default function ProfilePage() {
               </form>
             </div>
 
-            {/* ログイン履歴セクション */}
+            {/* MFA管理セクション */}
             <div className="bg-white shadow rounded-lg p-6">
+              <MFAManagement onUpdate={() => {}} />
+            </div>
+
+            {/* ログイン履歴セクション */}
+            <div className="bg-white shadow rounded-lg p-6 lg:col-span-1">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">ログイン履歴{isAdmin ? '（全ユーザー）' : ''}</h2>
               
               {loginHistoryError && (

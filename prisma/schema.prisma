@@ -23,6 +23,11 @@ model User {
   failedLoginAttempts   Int       @default(0) @map("failed_login_attempts")
   lockoutUntil          DateTime? @map("lockout_until")
   
+  // MFA関連フィールド
+  mfaEnabled            Boolean   @default(false) @map("mfa_enabled")
+  mfaSecret             String?   @map("mfa_secret")
+  backupCodes          String?   @map("backup_codes") // JSON文字列として保存
+  
   loginHistories        LoginHistory[]
   sessions              Session[] // JWTベースでもセッション管理が必要な場合のために残す
 
