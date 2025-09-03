@@ -3,10 +3,16 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useSWRConfig } from 'swr'
+import useSWR from 'swr'
 
 export default function Header() {
   const router = useRouter()
   const { mutate } = useSWRConfig()
+  const fetcher = (url: string) => fetch(url).then(res => res.json())
+  const { data } = useSWR<{ user?: { id: string; name: string; email: string; role: string } }>(
+    '/api/user/me',
+    fetcher
+  )
 
   const handleLogout = async () => {
     try {
@@ -38,6 +44,14 @@ export default function Header() {
           </div>
           
           <nav className="flex items-center space-x-4">
+            {data?.user && (
+              <span className="text-gray-600 text-sm">
+                ログイン中: <strong>{data.user.name}</strong>{' '}
+                <span className="ml-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded">
+                  {data.user.role}
+                </span>
+              </span>
+            )}
             <Link 
               href="/dashboard/profile" 
               className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"

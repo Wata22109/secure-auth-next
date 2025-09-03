@@ -38,6 +38,14 @@ export default function LoginPage() {
 
       const result = await response.json()
 
+      if (response.status === 423) {
+        setError(result.error || 'アカウントを一時ロックしました。ホームに戻ります...')
+        setTimeout(() => {
+          router.push('/')
+        }, 2000)
+        return
+      }
+
       if (response.ok) {
         // ログイン成功時はダッシュボードにリダイレクト
         router.push('/dashboard/profile')

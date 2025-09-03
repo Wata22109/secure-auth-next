@@ -15,6 +15,14 @@ interface LoginHistory {
   createdAt: string
 }
 
+interface AdminLoginHistory extends LoginHistory {
+  user?: {
+    id: string
+    name: string
+    email: string
+  }
+}
+
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export default function ProfilePage() {
@@ -34,9 +42,21 @@ export default function ProfilePage() {
 
   const newPassword = watch('newPassword', '')
 
-  // ログイン履歴の取得
-  const { data: loginHistoryData, error: loginHistoryError } = useSWR<{ loginHistory: LoginHistory[] }>(
-    '/api/user/login-history',
+  // 現在のユーザー
+  const { data: meData } = useSWR<{ user?: { id: string; name: string; email: string; role: string } }>(
+    '/api/user/me',
+    fetcher
+  )
+
+  const isAdmin = (meData?.user?.role || '').toUpperCase() === 'ADMIN'
+
+  // ログイン履歴の取得（一般は自分、管理者は全体）
+  const historyUrl = isAdmin
+    ? '/api/user/login-history?all=true&limit=50'
+    : '/api/user/login-history?limit=20'
+
+  const { data: loginHistoryData, error: loginHistoryError } = useSWR<{ loginHistory: AdminLoginHistory[] }>(
+    historyUrl,
     fetcher
   )
 
@@ -165,20 +185,25 @@ export default function ProfilePage() {
 
             {/* ログイン履歴セクション */}
             <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">ログイン履歴</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">ログイン履歴{isAdmin ? '（全ユーザー）' : ''}</h2>
               
               {loginHistoryError && (
                 <div className="text-red-600">ログイン履歴の取得に失敗しました</div>
               )}
               
               {loginHistoryData?.loginHistory && loginHistoryData.loginHistory.length > 0 ? (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto overflow-y-auto max-h-96">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           日時
                         </th>
+                        {isAdmin && (
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            ユーザー
+                          </th>
+                        )}
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           IPアドレス
                         </th>
@@ -193,6 +218,11 @@ export default function ProfilePage() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {formatDate(history.createdAt)}
                           </td>
+                          {isAdmin && (
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {history.user ? `${history.user.name} (${history.user.email})` : '-'}
+                            </td>
+                          )}
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {history.ipAddress}
                           </td>

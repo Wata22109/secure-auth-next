@@ -35,13 +35,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // アカウントロックチェック
-    if (user.lockoutUntil && user.lockoutUntil > new Date()) {
-      console.log('Account locked:', user.lockoutUntil)
-      return NextResponse.json(
-        { error: 'アカウントは一時的にロックされています。しばらく時間をおいてから再試行してください。' },
-        { status: 423 }
-      )
+    // アカウントロックチェック（期限切れなら解除）
+    if (user.lockoutUntil) {
+      const now = new Date()
+      if (user.lockoutUntil > now) {
+        console.log('Account locked:', user.lockoutUntil)
+        return NextResponse.json(
+          { error: 'アカウントは一時的にロックされています。しばらく時間をおいてから再試行してください。' },
+          { status: 423 }
+        )
+      } else {
+        // ロックが期限切れならクリア
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { lockoutUntil: null, failedLoginAttempts: 0 }
+        })
+        user.failedLoginAttempts = 0
+        user.lockoutUntil = null
+      }
     }
 
     // パスワード検証
@@ -62,6 +73,12 @@ export async function POST(request: NextRequest) {
       })
 
       console.log('Login failed, updated attempts:', failedAttempts)
+      if (failedAttempts >= 5) {
+        return NextResponse.json(
+          { error: '失敗が多すぎるためアカウントを一時ロックしました。15分後に再試行してください。' },
+          { status: 423 }
+        )
+      }
       return NextResponse.json(
         { error: 'メールアドレスまたはパスワードが正しくありません' },
         { status: 401 }

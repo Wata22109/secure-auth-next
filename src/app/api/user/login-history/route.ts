@@ -13,7 +13,40 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // ログイン履歴の取得（最新5件）
+    const { searchParams } = new URL(request.url)
+    const limitParam = searchParams.get('limit')
+    const limit = Math.min(Math.max(parseInt(limitParam || '10', 10) || 10, 1), 100)
+
+    const isAdmin = (user.role || '').toUpperCase() === 'ADMIN'
+
+    if (isAdmin && searchParams.get('all') === 'true') {
+      // 管理者は全ユーザーのログイン履歴を確認可能
+      const loginHistory = await prisma.loginHistory.findMany({
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: limit,
+        select: {
+          id: true,
+          ipAddress: true,
+          userAgent: true,
+          createdAt: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
+      })
+
+      return NextResponse.json({
+        loginHistory
+      })
+    }
+
+    // 一般ユーザー: 自分の履歴
     const loginHistory = await prisma.loginHistory.findMany({
       where: {
         userId: user.sub
@@ -21,7 +54,7 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: 'desc'
       },
-      take: 5,
+      take: limit,
       select: {
         id: true,
         ipAddress: true,
