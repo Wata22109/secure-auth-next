@@ -89,7 +89,6 @@ export default function SignupPage() {
         setError(result.error || 'アカウント作成に失敗しました')
       }
     } catch (error) {
-      console.error('Signup error:', error)
       setError('アカウント作成中にエラーが発生しました')
     } finally {
       setIsSubmitting(false)

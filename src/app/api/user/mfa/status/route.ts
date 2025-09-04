@@ -45,7 +45,6 @@ export async function GET(request: NextRequest) {
       remainingBackupCodes
     })
   } catch (error) {
-    console.error('MFA status error:', error)
     return NextResponse.json(
       { error: 'MFA状態の取得中にエラーが発生しました' },
       { status: 500 }

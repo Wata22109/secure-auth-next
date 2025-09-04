@@ -74,7 +74,6 @@ export async function POST(request: NextRequest) {
       message: 'バックアップコードが再生成されました'
     })
   } catch (error) {
-    console.error('Backup codes regeneration error:', error)
     return NextResponse.json(
       { error: 'バックアップコードの再生成中にエラーが発生しました' },
       { status: 500 }

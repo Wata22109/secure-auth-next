@@ -52,7 +52,6 @@ export async function POST(request: NextRequest) {
       backupCodes: mfaSetup.backupCodes
     })
   } catch (error) {
-    console.error('MFA setup error:', error)
     return NextResponse.json(
       { error: 'MFA設定の初期化中にエラーが発生しました' },
       { status: 500 }

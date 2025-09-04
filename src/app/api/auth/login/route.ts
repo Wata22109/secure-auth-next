@@ -8,12 +8,10 @@ import bcrypt from 'bcryptjs'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    console.log('Login attempt:', { email: body.email })
     
     // バリデーション
     const validatedData = loginSchema.safeParse(body)
     if (!validatedData.success) {
-      console.log('Validation error:', validatedData.error.errors)
       return NextResponse.json(
         { error: 'バリデーションエラー', details: validatedData.error.errors },
         { status: 400 }
@@ -27,8 +25,6 @@ export async function POST(request: NextRequest) {
       where: { email }
     })
 
-    console.log('User found:', user ? { id: user.id, email: user.email, role: user.role } : 'Not found')
-
     if (!user) {
       return NextResponse.json(
         { error: 'メールアドレスまたはパスワードが正しくありません' },
@@ -40,7 +36,6 @@ export async function POST(request: NextRequest) {
     if (user.lockoutUntil) {
       const now = new Date()
       if (user.lockoutUntil > now) {
-        console.log('Account locked:', user.lockoutUntil)
         return NextResponse.json(
           { error: 'アカウントは一時的にロックされています。しばらく時間をおいてから再試行してください。' },
           { status: 423 }
@@ -58,7 +53,6 @@ export async function POST(request: NextRequest) {
 
     // パスワード検証
     const isValidPassword = await bcrypt.compare(password, user.password)
-    console.log('Password validation:', { isValid: isValidPassword })
 
     if (!isValidPassword) {
       // ログイン失敗時の処理
@@ -73,7 +67,6 @@ export async function POST(request: NextRequest) {
         }
       })
 
-      console.log('Login failed, updated attempts:', failedAttempts)
       if (failedAttempts >= 5) {
         return NextResponse.json(
           { error: '失敗が多すぎるためアカウントを一時ロックしました。15分後に再試行してください。' },
@@ -124,8 +117,6 @@ export async function POST(request: NextRequest) {
     })
     setJWTCookie(token)
 
-    console.log('Login successful:', { userId: user.id, email: user.email })
-
     return NextResponse.json({
       message: 'ログインに成功しました',
       user: {
@@ -136,7 +127,6 @@ export async function POST(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Login error:', error)
     return NextResponse.json(
       { error: 'ログイン中にエラーが発生しました' },
       { status: 500 }

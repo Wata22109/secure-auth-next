@@ -71,7 +71,6 @@ export async function POST(request: NextRequest) {
       message: 'MFAが正常に有効化されました'
     })
   } catch (error) {
-    console.error('MFA enable error:', error)
     return NextResponse.json(
       { error: 'MFA有効化中にエラーが発生しました' },
       { status: 500 }

@@ -4,8 +4,6 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 シードデータの作成を開始します...')
-
   // 管理者ユーザーの作成
   const adminPassword = await bcrypt.hash('Admin123!@#', 12)
   const adminUser = await prisma.user.upsert({
@@ -82,19 +80,10 @@ async function main() {
       data: history,
     })
   }
-
-  console.log('✅ シードデータの作成が完了しました！')
-  console.log('📋 作成されたユーザー:')
-  console.log(`  管理者: admin@example.com / Admin123!@#`)
-  console.log(`  一般ユーザー: user@example.com / User123!@#`)
-  console.log(`  テストユーザー: test@example.com / Test123!@#`)
-  console.log('')
-  console.log('🔐 セキュリティ注意: 本番環境では必ずパスワードを変更してください！')
 }
 
 main()
   .catch((e) => {
-    console.error('❌ シードデータの作成中にエラーが発生しました:', e)
     process.exit(1)
   })
   .finally(async () => {

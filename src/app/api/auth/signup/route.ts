@@ -60,7 +60,6 @@ export async function POST(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Signup error:', error)
     return NextResponse.json(
       { error: 'アカウント作成中にエラーが発生しました' },
       { status: 500 }

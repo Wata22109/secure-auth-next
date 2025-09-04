@@ -113,8 +113,6 @@ export async function POST(request: NextRequest) {
     })
     setJWTCookie(jwtToken)
 
-    console.log('MFA verification successful:', { userId: user.id, email: user.email })
-
     return NextResponse.json({
       message: 'MFA認証に成功しました',
       user: {
@@ -126,7 +124,6 @@ export async function POST(request: NextRequest) {
       remainingBackupCodes: remainingBackupCodes.length
     })
   } catch (error) {
-    console.error('MFA verification error:', error)
     return NextResponse.json(
       { error: 'MFA認証中にエラーが発生しました' },
       { status: 500 }

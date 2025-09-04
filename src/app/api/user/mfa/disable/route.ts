@@ -72,7 +72,6 @@ export async function POST(request: NextRequest) {
       message: 'MFAが正常に無効化されました'
     })
   } catch (error) {
-    console.error('MFA disable error:', error)
     return NextResponse.json(
       { error: 'MFA無効化中にエラーが発生しました' },
       { status: 500 }

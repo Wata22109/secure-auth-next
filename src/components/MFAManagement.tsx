@@ -33,7 +33,7 @@ export default function MFAManagement({ onUpdate }: MFAManagementProps) {
         setMfaStatus(data)
       }
     } catch (error) {
-      console.error('MFA status fetch error:', error)
+      // Error handling
     } finally {
       setIsLoading(false)
     }

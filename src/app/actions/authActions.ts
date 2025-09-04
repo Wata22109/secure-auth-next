@@ -60,7 +60,6 @@ export async function signupAction(formData: FormData) {
     revalidatePath('/')
     redirect('/dashboard/profile')
   } catch (error) {
-    console.error('Signup error:', error)
     return {
       error: 'アカウント作成中にエラーが発生しました'
     }
@@ -143,7 +142,6 @@ export async function loginAction(formData: FormData) {
     revalidatePath('/')
     redirect('/dashboard/profile')
   } catch (error) {
-    console.error('Login error:', error)
     return {
       error: 'ログイン中にエラーが発生しました'
     }

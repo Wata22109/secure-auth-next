@@ -64,7 +64,6 @@ export async function PATCH(request: NextRequest) {
       message: 'パスワードが正常に変更されました'
     })
   } catch (error) {
-    console.error('Change password error:', error)
     return NextResponse.json(
       { error: 'パスワード変更中にエラーが発生しました' },
       { status: 500 }

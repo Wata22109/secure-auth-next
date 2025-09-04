@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
       message: existingUser ? 'このメールアドレスは既に使用されています' : 'このメールアドレスは使用可能です'
     })
   } catch (error) {
-    console.error('Email check error:', error)
     return NextResponse.json(
       { error: 'サーバーエラーが発生しました' },
       { status: 500 }

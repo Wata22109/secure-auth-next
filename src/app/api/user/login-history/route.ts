@@ -67,7 +67,6 @@ export async function GET(request: NextRequest) {
       loginHistory
     })
   } catch (error) {
-    console.error('Get login history error:', error)
     return NextResponse.json(
       { error: 'ログイン履歴の取得中にエラーが発生しました' },
       { status: 500 }

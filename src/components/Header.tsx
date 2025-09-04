@@ -29,7 +29,7 @@ export default function Header() {
         router.push('/login')
       }
     } catch (error) {
-      console.error('Logout error:', error)
+      // Error handling
     }
   }
 

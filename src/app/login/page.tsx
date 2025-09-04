@@ -70,7 +70,6 @@ export default function LoginPage() {
         setError(result.error || 'ログインに失敗しました')
       }
     } catch (error) {
-      console.error('Login error:', error)
       setError('ログイン中にエラーが発生しました')
     } finally {
       setIsSubmitting(false)

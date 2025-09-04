@@ -27,7 +27,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ user })
   } catch (error) {
-    console.error('Get current user error:', error)
     return NextResponse.json({ error: 'ユーザー情報の取得に失敗しました' }, { status: 500 })
   }
 }
