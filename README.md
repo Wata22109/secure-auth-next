@@ -142,7 +142,7 @@ if (!isValidPassword) {
 
 **実装ファイル**: `src/lib/validations.ts`, `src/components/PasswordStrengthMeter.tsx`
 
-リアルタイムでパスワードの強度を評価し、ユーザーに視覚的フィードバックを提供します。
+リアルタイムでパスワードの強度を評価します。
 
 **強度判定ロジック**:
 ```typescript
@@ -255,11 +255,12 @@ await prisma.loginHistory.create({
 
 **表示例**:
 
-![ログイン履歴 - 管理者ビュー](./public/images/login-history-admin.png)
 *管理者ビュー（全ユーザーの履歴）*
+![ログイン履歴 - 管理者ビュー](./public/images/login-history-admin.png)
 
-![ログイン履歴 - 一般ユーザービュー](./public/images/login-history-user.png)
 *一般ユーザービュー（自分の履歴のみ）*
+![ログイン履歴 - 一般ユーザービュー](./public/images/login-history-user.png)
+
 
 **API実装**:
 ```typescript
