@@ -132,6 +132,14 @@ if (!isValidPassword) {
 - ロック解除は自動（15分経過後）
 - ログイン成功時に失敗回数とロック時刻をリセット
 
+**動作例**:
+
+<video width="100%" controls>
+  <source src="/videos/account-lockout-demo.mp4" type="video/mp4">
+  アカウントロック機能の動作デモ
+</video>
+*ログイン失敗を繰り返してアカウントがロックされる様子*
+
 ### 3. パスワード強度チェック
 
 **実装ファイル**: `src/lib/validations.ts`, `src/components/PasswordStrengthMeter.tsx`
@@ -200,6 +208,14 @@ export default function PasswordStrengthMeter({ password }: PasswordStrengthMete
 - 大文字、小文字、数字、記号の組み合わせ必須
 - Zodスキーマによるサーバーサイドバリデーション
 
+**動作例**:
+
+<video width="100%" controls>
+  <source src="/videos/password-strength-demo.mp4" type="video/mp4">
+  パスワード強度メーターの動作デモ
+</video>
+*パスワード入力時のリアルタイム強度バーの変化*
+
 ### 4. ログイン履歴管理
 
 **実装ファイル**: `src/app/api/user/login-history/route.ts`, `src/app/dashboard/profile/page.tsx`
@@ -240,6 +256,14 @@ await prisma.loginHistory.create({
 - 管理者: 全ユーザーのログイン履歴を表示
 - 直近20件（一般）/ 50件（管理者）を表示
 - IPアドレス、ユーザーエージェント、日時を記録
+
+**表示例**:
+
+![ログイン履歴 - 管理者ビュー](/images/login-history-admin.png)
+*管理者ビュー（全ユーザーの履歴）*
+
+![ログイン履歴 - 一般ユーザービュー](/images/login-history-user.png)
+*一般ユーザービュー（自分の履歴のみ）*
 
 **API実装**:
 ```typescript
@@ -404,6 +428,14 @@ if (user.mfaEnabled) {
 - バックアップコード使用オプション
 - 認証アプリ（Google Authenticator、Authy等）との連携
 
+**設定例**:
+
+<video width="100%" controls>
+  <source src="/videos/mfa-setup-flow.mp4" type="video/mp4">
+  MFA設定フローの動作デモ
+</video>
+*MFA設定の全体的な流れ（QRコードの表示、認証アプリでのスキャン、TOTPトークンの入力と検証、バックアップコードの表示）*
+
 ## 機能一覧と実装解説
 
 ### 基本機能
@@ -553,37 +585,6 @@ src/
 - 入力値バリデーション
 - 多要素認証（MFA/TOTP）
 - ログイン履歴管理
-
-## 画像・動画を含めるべきポイント
-
-### 1. パスワード強度メーターの動作
-**推奨画像**: パスワード入力時のリアルタイム強度バーの変化を示すスクリーンショット
-- 弱いパスワード（赤色バー）
-- 普通のパスワード（黄色バー）
-- 安全なパスワード（緑色バー）
-
-### 2. アカウントロック機能の動作
-**推奨動画**: ログイン失敗を繰り返してアカウントがロックされる様子
-- 5回のログイン失敗
-- ロックメッセージの表示
-- 15分後の自動解除
-
-### 3. MFA設定フロー
-**推奨動画**: MFA設定の全体的な流れ
-- QRコードの表示
-- 認証アプリでのスキャン
-- TOTPトークンの入力と検証
-- バックアップコードの表示
-
-### 4. ログイン履歴の表示
-**推奨画像**: プロファイルページのログイン履歴テーブル
-- 管理者ビュー（全ユーザーの履歴）
-- 一般ユーザービュー（自分の履歴のみ）
-
-### 5. CSPヘッダーの効果
-**推奨画像**: ブラウザの開発者ツールでのCSPヘッダー確認
-- Network タブでのレスポンスヘッダー
-- Console タブでのCSP違反エラー
 
 ## ライセンス
 
