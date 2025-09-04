@@ -444,75 +444,25 @@ if (user.mfaEnabled) {
 4. SWRキャッシュクリア
 5. ログインページへリダイレクト
 
-### 追加機能
 
-以下の追加機能については、詳細な実装内容を「セキュリティ機能の詳細実装」セクションで説明しています：
+### 実装されたセキュリティ機能
 
-- **パスワード強度メーター**: リアルタイム強度評価と視覚的フィードバック
+- **JWTトークンベース認証**: セキュアなCookie設定による認証
+- **パスワードハッシュ化**: bcrypt（コストファクター12）による安全なパスワード保存
 - **アカウントロック機能**: ブルートフォース攻撃対策
+- **パスワード強度チェック**: リアルタイム強度評価
 - **ログイン履歴管理**: セキュリティ監査のための履歴記録
+- **Content Security Policy**: 厳格なセキュリティヘッダー設定
 - **多要素認証（MFA）**: TOTPベースの二段階認証
 
-#### パスワード変更機能
+### セキュリティ考慮事項
 
-**プロファイルページ実装:**
-- 現在のパスワード、新しいパスワード、確認用パスワードの3つの入力フィールド
-- パスワード強度メーター付き
-- 現在のパスワード検証機能
-
-**API処理フロー:**
-1. 現在のパスワードをbcrypt.compareで検証
-2. 新しいパスワードをbcryptでハッシュ化
-3. データベース更新
-4. 成功メッセージ表示
-
-## セキュリティ設計
-
-### パスワードハッシュ化
-
-**bcryptの採用理由:**
-- ソルト自動生成によるレインボーテーブル攻撃対策
-- 計算コストの調整可能（コストファクター12を採用）
-- 時間ベースの攻撃に対する耐性
-
-**コストファクター12について:**
-- 2^12 = 4096回のハッシュ計算
-- セキュリティとパフォーマンスのバランス
-- 現代的なハードウェアでの適切な計算時間
-
-### Cookieの安全性
-
-**設定属性:**
-- `HttpOnly`: JavaScriptからのアクセス防止（XSS対策）
-- `Secure`: HTTPS通信時のみ送信（本番環境）
-- `SameSite=Strict`: CSRF攻撃対策
-- `Path=/`: アプリケーション全体で有効
-
-**各属性の役割:**
-- **HttpOnly**: クライアントサイドスクリプトによるトークン窃取を防止
-- **Secure**: 中間者攻撃によるトークン傍受を防止
-- **SameSite**: クロスサイトリクエストフォージェリ攻撃を防止
-
-### Content Security Policy (CSP)
-
-**設定したCSPディレクティブ:**
-```javascript
-"default-src 'self'",
-"script-src 'self'",
-"style-src 'self' 'unsafe-inline'",
-"img-src 'self' data: https:",
-"font-src 'self'",
-"connect-src 'self'",
-"frame-ancestors 'none'",
-"base-uri 'self'",
-"form-action 'self'"
-```
-
-**各ディレクティブの意図:**
-- **default-src 'self'**: デフォルトで同一オリジンのみ許可
-- **script-src 'self'**: インラインスクリプトを禁止し、同一オリジンのスクリプトのみ許可
-- **frame-ancestors 'none'**: クリックジャッキング攻撃を防止
-- **form-action 'self'**: フォーム送信先を同一オリジンに制限
+- **XSS攻撃対策**: HttpOnly Cookie、CSPヘッダー
+- **CSRF攻撃対策**: SameSite=Strict Cookie設定
+- **ブルートフォース攻撃対策**: アカウントロック機能
+- **パスワード攻撃対策**: bcryptハッシュ化、強度チェック
+- **セッション管理**: 3時間のJWT有効期限
+- **情報漏洩対策**: セキュアなHTTPヘッダー設定
 
 ## 技術スタック
 
@@ -526,48 +476,6 @@ if (user.mfaEnabled) {
 - **スタイリング**: Tailwind CSS
 - **言語**: TypeScript
 - **MFA**: otplib (TOTP), qrcode (QRコード生成)
-
-## セットアップ
-
-### 前提条件
-- Node.js 18以上
-- npm または yarn
-
-### インストール手順
-
-1. 依存関係のインストール
-```bash
-npm install
-```
-
-2. 環境変数の設定
-```bash
-# .env.local ファイルを作成
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
-NEXTAUTH_SECRET="your-nextauth-secret-key"
-```
-
-3. データベースのセットアップ
-```bash
-npx prisma generate
-npx prisma db push
-```
-
-4. 開発サーバーの起動
-```bash
-npm run dev
-```
-
-### 利用可能なスクリプト
-
-- `npm run dev`: 開発サーバー起動
-- `npm run build`: プロダクションビルド
-- `npm run start`: プロダクションサーバー起動
-- `npm run lint`: ESLint実行
-- `npm run db:generate`: Prismaクライアント生成
-- `npm run db:push`: データベーススキーマ適用
-- `npm run db:studio`: Prisma Studio起動
 
 ## アーキテクチャ
 
@@ -645,13 +553,6 @@ src/
 - 入力値バリデーション
 - 多要素認証（MFA/TOTP）
 - ログイン履歴管理
-
-### 推奨される追加セキュリティ対策
-- レートリミットの実装
-- セッション管理の強化
-- 監査ログの詳細化
-- セキュリティヘッダーの追加
-- 定期的なセキュリティ監査
 
 ## 画像・動画を含めるべきポイント
 
