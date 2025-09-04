@@ -134,10 +134,8 @@ if (!isValidPassword) {
 
 **動作例**:
 
-<video width="100%" controls>
-  <source src="/videos/account-lockout-demo.mp4" type="video/mp4">
-  アカウントロック機能の動作デモ
-</video>
+📹 **[アカウントロック機能の動作デモ](./public/videos/account-lockout-demo.mp4)**
+
 *ログイン失敗を繰り返してアカウントがロックされる様子*
 
 ### 3. パスワード強度チェック
@@ -210,10 +208,8 @@ export default function PasswordStrengthMeter({ password }: PasswordStrengthMete
 
 **動作例**:
 
-<video width="100%" controls>
-  <source src="/videos/password-strength-demo.mp4" type="video/mp4">
-  パスワード強度メーターの動作デモ
-</video>
+📹 **[パスワード強度メーターの動作デモ](./public/videos/password-strength-demo.mp4)**
+
 *パスワード入力時のリアルタイム強度バーの変化*
 
 ### 4. ログイン履歴管理
@@ -259,10 +255,10 @@ await prisma.loginHistory.create({
 
 **表示例**:
 
-![ログイン履歴 - 管理者ビュー](/images/login-history-admin.png)
+![ログイン履歴 - 管理者ビュー](./public/images/login-history-admin.png)
 *管理者ビュー（全ユーザーの履歴）*
 
-![ログイン履歴 - 一般ユーザービュー](/images/login-history-user.png)
+![ログイン履歴 - 一般ユーザービュー](./public/images/login-history-user.png)
 *一般ユーザービュー（自分の履歴のみ）*
 
 **API実装**:
@@ -430,10 +426,8 @@ if (user.mfaEnabled) {
 
 **設定例**:
 
-<video width="100%" controls>
-  <source src="/videos/mfa-setup-flow.mp4" type="video/mp4">
-  MFA設定フローの動作デモ
-</video>
+📹 **[MFA設定フローの動作デモ](./public/videos/mfa-setup-flow.mp4)**
+
 *MFA設定の全体的な流れ（QRコードの表示、認証アプリでのスキャン、TOTPトークンの入力と検証、バックアップコードの表示）*
 
 ## 機能一覧と実装解説
